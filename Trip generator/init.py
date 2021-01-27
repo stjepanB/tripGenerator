@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 import random
 import requests
 
-
 url = "http://localhost:9234/records"
 
 locations = [
@@ -85,7 +84,6 @@ def createRecord(plate, time, location):
     return record
 
 
-
 def createTrip(numOfSections=2, locationIndex=0, plate='ZG123NN', startTime=datetime.now() ,direction='A'):
     arr=[]
     if(direction == 'A'):
@@ -107,3 +105,5 @@ def createTrip(numOfSections=2, locationIndex=0, plate='ZG123NN', startTime=date
 d = createTrip(plate='ST2212LP',numOfSections=10)
 headers = {'Content-Type': 'application/json', 'Accept':'application/json'}
 requests.post(url = url, headers=headers, json=d,  verify=False)
+
+
