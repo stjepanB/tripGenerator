@@ -102,7 +102,7 @@ def createTrip(numOfSections=2, locationIndex=0, plate='ZG123NN', startTime=date
         return arr
 
 
-d = createTrip(plate='ST2212LP',numOfSections=10)
+d = createTrip(plate='ST2121LP',numOfSections=10, startTime= datetime.now() - timedelta(days=2))
 headers = {'Content-Type': 'application/json', 'Accept':'application/json'}
 requests.post(url = url, headers=headers, json=d,  verify=False)
 
