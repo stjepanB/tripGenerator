@@ -2,10 +2,11 @@
 from datetime import datetime, timedelta
 import random
 import requests
+import string
 
 url = "http://localhost:9234/records"
 
-locations = [
+locationsRijeka = [
     "Lučko",
     "Zdenčina",
     "Jastrebarsko",
@@ -17,7 +18,9 @@ locations = [
     "Delnice",
     "Vrata",
     "Oštrovica",
-    "Rijeka",
+    "Rijeka"]
+
+locationsSplit = [
     "Lučko",
     "Zdenčina",
     "Jastrebarsko",
@@ -83,8 +86,7 @@ def createRecord(plate, time, location):
     }
     return record
 
-
-def createTrip(numOfSections=2, locationIndex=0, plate='ZG123NN', startTime=datetime.now() ,direction='A'):
+def createTrip(numOfSections=2, locationIndex=0, locations=locationsSplit, plate='ZG123NN', startTime=datetime.now() ,direction='A'):
     arr=[]
     if(direction == 'A'):
         for time in createDateTime(startTime,numOfSections):
@@ -101,9 +103,34 @@ def createTrip(numOfSections=2, locationIndex=0, plate='ZG123NN', startTime=date
                 break
         return arr
 
+def createPlateMark(registerUser=False):
+    if(registerUser):
+        return 'ZG2222LL'
+    towns= ['ZG', 'BJ', 'BM', 'ČK', 'DA', 'DE', 'DJ', 'DU', 'GS', 'IM', 'KA', 'KC', 'KR', 'KT', 'KŽ', 'MA', 'NA', 'NG', 'OG', 'OS', 'PU', 'PŽ', 'RI', 'SB', 'SK', 'SL', 'ST', 'ŠI', 'VK', 'VT', 'VU', 'VŽ', 'ZD', 'ŽU']
+    num = random.randint(100,9999)
+    lett = random.choice(string.ascii_letters).upper()
+    lett += random.choice(string.ascii_letters).upper()
+    return towns[random.randint(0,len(towns) -1)] + str(num) +lett
 
-d = createTrip(plate='ST2121LP',numOfSections=10, startTime= datetime.now() - timedelta(days=2))
+def rndTime():
+    return datetime.now() - timedelta(days=random.randint(0,150),hours=random.randint(0,20))
+
+def rndSects():
+    return random.randint(2,28)
+
+def rndLct():
+    return random.randint(0,30)
+
+
+
+trips = []
+
+for i in range(0,100):
+    trips.extend(createTrip(plate=createPlateMark(),numOfSections=rndSects(), locationIndex=rndLct(),startTime=rndTime()))
+
+trips.extend(createTrip(plate=createPlateMark(True),numOfSections=rndSects(), locationIndex=rndLct(),startTime=rndTime()))
+
 headers = {'Content-Type': 'application/json', 'Accept':'application/json'}
-requests.post(url = url, headers=headers, json=d,  verify=False)
+response = requests.post(url = url, headers=headers, json=trips,  verify=False)
 
-
+print response
